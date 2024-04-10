@@ -1,7 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <dirent.h>
-#include <sys/stat.h>
 #include <string.h>
 #include <getopt.h>
 #include <locale.h>
@@ -67,7 +66,7 @@ void scanDirectory(const char *dirPath, int tab, struct options opts)
                 {
                     printf(" ");
                 }
-                printf("Dir: %s\n", entry->d_name);
+                printf("DIR: %s\n", entry->d_name);
             }
 
             char sub_dir_path[PATH_MAX];
