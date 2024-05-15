@@ -7,7 +7,7 @@ SRC = main.c \
       consumer.c \
       message.c \
       producer.c \
-      cd functions.c
+      functions.c
 
 OBJ = $(SRC:.c=.o)
 
