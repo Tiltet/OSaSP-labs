@@ -137,7 +137,8 @@ void createChild(void) {
     createChildProcess(childPid);
 
     // Проверяем результат создания дочернего процесса
-    if (childPid == -1) {
+    if (childPid == -1)
+    {
         // Если произошла ошибка при создании дочернего процесса, выводим
         // сообщение об ошибке
         fprintf(stderr, "%s\n", strerror(errno));
@@ -146,12 +147,15 @@ void createChild(void) {
 
     // Если childPid равен 0, это значит, что код выполняется внутри дочернего
     // процесса
-    if (childPid == 0) {
+    if (childPid == 0)
+    {
         // Запускаем исполнение другой программы (child) внутри дочернего
         // процесса с помощью execve
         char* args[] = {"child", NULL};
         execve("./child", args, NULL);
-    } else {
+    }
+    else
+    {
         // Если код выполняется в родительском процессе
         // Выводим информацию о созданном дочернем процессе (его PID и название)
         printf("PID %d (%s) - created\n", childPid,
@@ -163,9 +167,11 @@ void createChild(void) {
 }
 
 // Функция для завершения дочернего процесса
-void killChild(void) {
+void killChild(void)
+{
     // Проверяем, что массив childProcesses не равен NULL
-    if (childProcesses != NULL) {
+    if (childProcesses != NULL)
+    {
         // Удаляем последний дочерний процесс из массива
         deleteChildProcess(childProcesses, childPidsNumber - 1);
 
@@ -183,9 +189,11 @@ void killChild(void) {
 }
 
 // Функция для вывода информации о всех процессах
-void printAllProcesses(void) {
+void printAllProcesses(void)
+{
     // Проверяем, что массив childProcesses не равен NULL
-    if (childProcesses != NULL) {
+    if (childProcesses != NULL)
+    {
         // Выводим PID родительского процесса
         printf("parent - %d\n", getpid());
 
@@ -193,16 +201,20 @@ void printAllProcesses(void) {
         printf("child :\n");
 
         // Перебираем все дочерние процессы в массиве
-        for (int i = 0; i < childPidsNumber; i++) {
+        for (int i = 0; i < childPidsNumber; i++)
+        {
             // Выводим имя и PID каждого дочернего процесса
             printf("%s - \t%d\t", childProcesses[i].name,
                    childProcesses[i].pid);
 
             // Проверяем разрешение статистики для текущего дочернего процесса
-            if (childProcesses[i].forbiddenStatistics) {
+            if (childProcesses[i].forbiddenStatistics)
+            {
                 // Если статистика запрещена, выводим сообщение
                 printf("Statistics forbidden!\n");
-            } else {
+            }
+            else
+            {
                 // Если статистика разрешена, выводим сообщение
                 printf("Statistics allowed...\n");
             }
@@ -211,9 +223,11 @@ void printAllProcesses(void) {
 }
 
 // Функция для запрета вывода статистики для всех процессов
-void banStatistics(void) {
+void banStatistics(void)
+{
     // Перебираем все дочерние процессы в массиве
-    for (int i = 0; i < childPidsNumber; i++) {
+    for (int i = 0; i < childPidsNumber; i++)
+    {
         // Отправляем сигнал SIGUSR1 процессу с PID из массива
         kill(childProcesses[i].pid, SIGUSR1);
 
@@ -223,9 +237,11 @@ void banStatistics(void) {
 }
 
 // Функция для разрешения вывода статистики для всех процессов
-void allowStatistics(void) {
+void allowStatistics(void)
+{
     // Перебираем все дочерние процессы в массиве
-    for (int i = 0; i < childPidsNumber; i++) {
+    for (int i = 0; i < childPidsNumber; i++)
+    {
         // Отправляем сигнал SIGUSR2 процессу с PID из массива
         kill(childProcesses[i].pid, SIGUSR2);
 
@@ -235,17 +251,20 @@ void allowStatistics(void) {
 }
 
 // Функция для отправки сигнала всем дочерним процессам
-void sendSignalToAllChilds(int signal) {
+void sendSignalToAllChilds(int signal)
+{
     // Устанавливаем флаг запрета статистики по умолчанию в true
     bool forbid = true;
 
     // Если сигнал равен SIGUSR2, устанавливаем флаг запрета в false
-    if (signal == SIGUSR2) {
+    if (signal == SIGUSR2)
+    {
         forbid = false;
     }
 
     // Перебираем все дочерние процессы в массиве
-    for (int i = 0; i < childPidsNumber; i++) {
+    for (int i = 0; i < childPidsNumber; i++)
+    {
         // Отправляем указанный сигнал процессу с PID из массива
         kill(childProcesses[i].pid, signal);
 
@@ -256,7 +275,8 @@ void sendSignalToAllChilds(int signal) {
 
 // Функция для остановки всех процессов и вывода статистики определенного
 // процесса
-void stopAllAndRequest(int childPidNum) {
+void stopAllAndRequest(int childPidNum)
+{
     // Отправляем сигнал SIGUSR1 всем дочерним процессам для остановки вывода
     // статистики
     sendSignalToAllChilds(SIGUSR1);
@@ -290,31 +310,37 @@ void stopAllAndRequest(int childPidNum) {
 }
 
 // Функция для проверки ввода пользователя
-int checkInput(const char* option) {
+int checkInput(const char* option)
+{
     const char* pattern1 = "[sgp]<[0-9]+>";
     const char* pattern2 = "[qlksg+-]";
     regex_t regex1, regex2;
     int ret = regcomp(&regex1, pattern1, REG_EXTENDED);
-    if (ret) {
+    if (ret)
+    {
         printf("Error in regex 1\n");
         regfree(&regex1);
         return 1;
     }
 
     ret = regcomp(&regex2, pattern2, REG_EXTENDED);
-    if (ret) {
+    if (ret)
+    {
         printf("Error in regex 2\n");
         regfree(&regex2);
         return 1;
     }
 
     ret = regexec(&regex1, option, 0, NULL, 0);
-    if (!ret) {
+    if (!ret)
+    {
         return 1;
     }
-    if (ret == REG_NOMATCH) {
+    if (ret == REG_NOMATCH)
+    {
         ret = regexec(&regex2, option, 0, NULL, 0);
-        if (!ret) {
+        if (!ret)
+        {
             return 2;
         }
         return -1;
@@ -322,7 +348,8 @@ int checkInput(const char* option) {
     return -1;
 }
 
-void printOptions(void) {
+void printOptions(void)
+{
     printf("\n\n\nOptions:\n");
     printf("  + : Create a new child process\n");
     printf("  - : Kill the last created child process\n");
@@ -336,48 +363,58 @@ void printOptions(void) {
     printf("  p<num> : Stop all and request information from child <num>\n");
     printf("Enter option: ");
 }
-int main(void) {
-    while (true) {
+int main(void)
+{
+    while (true)
+    {
         printOptions();
 
         char option[10];
         strcpy(option, "\0");
         fgets(option, sizeof(option), stdin);  // Ввод опции с клавиатуры
 
-        int regexCheck = checkInput(
-            option);  // Проверка ввода на соответствие определенным шаблонам
+        int regexCheck = checkInput(option);  // Проверка ввода на соответствие определенным шаблонам
 
-        if (regexCheck == 1) {  // Если ввод соответствует шаблону "Х<num>"
+        if (regexCheck == 1)
+        {  // Если ввод соответствует шаблону "Х<num>"
             int childNum = getChildNum(
                 option);  // Получаем номер дочернего процесса из опции
 
-            if (childNum >= childPidsNumber) {  // Проверяем корректность номера
+            if (childNum >= childPidsNumber)  // Проверяем корректность номера
+            {
                                                 // дочернего процесса
                 printf("Error - %d\n", childPidsNumber);
                 continue;  // Пропускаем итерацию цикла, если номер некорректен
             }
 
             // Обработка команд в зависимости от первого символа опции
-            if (option[0] == 's') {
+            if (option[0] == 's')
+            {
                 // Остановить вывод статистики для выбранного дочернего процесса
                 kill(childProcesses[childNum].pid, SIGUSR1);
                 childProcesses[childNum].forbiddenStatistics = true;
                 printf("%s statistics is forbidden\n",
                        childProcesses[childNum].name);
-            } else if (option[0] == 'g') {
+            }
+            else if (option[0] == 'g')
+            {
                 // Разрешить вывод статистики для выбранного дочернего процесса
                 kill(childProcesses[childNum].pid, SIGUSR2);
                 childProcesses[childNum].forbiddenStatistics = false;
                 printf("%s statistics is allowed\n",
                        childProcesses[childNum].name);
-            } else if (option[0] == 'p') {
+            }
+            else if (option[0] == 'p')
+            {
                 // Остановить все процессы и запросить статистику для
                 // определенного процесса
                 stopAllAndRequest(childNum);
             }
-        } else if (regexCheck ==
-                   2) {  // Если ввод соответствует другому шаблону
-            switch (option[0]) {
+        }
+        else if (regexCheck ==2) // Если ввод соответствует другому шаблону
+        {
+            switch (option[0])
+            {
                 case '+':
                     // Создать новый дочерний процесс
                     createChild();
@@ -409,11 +446,11 @@ int main(void) {
                 default:
                     break;
             }
-        } else {
+        }
+        else {
             puts("Wrong input");  // Вывод сообщения об ошибке при некорректном
                                   // вводе
         }
     }
-
     return 0;
 }
