@@ -13,20 +13,27 @@ size_t producersCount = 0;
  * Функция создает новый процесс-производитель с помощью fork().
  * Дочерний процесс занимается добавлением сообщений в общую очередь.
  */
-void createProducer(void) {
-    if (producersCount == PRODUCERS_MAX_COUNT) {
+void createProducer(void)
+{
+    if (producersCount == PRODUCERS_MAX_COUNT)
+    {
         printf("Max count of producers is reached\n");
         return;
     }
     
     pid_t pid = fork(); // Создание нового процесса
 
-    if (pid == -1) {
+    if (pid == -1)
+    {
         perror("producer fork");
         exit(EXIT_FAILURE);
-    } else if (pid == 0) {
+    }
+    else if (pid == 0)
+    {
         srand(getpid()); // Инициализация генератора случайных чисел для потомка
-    } else {
+    }
+    else
+    {
         producersPids[producersCount++] = pid; // Сохранение PID нового производителя
         return;
     }
@@ -44,7 +51,8 @@ void createProducer(void) {
     openSemaphore(MUTEX, &mutex, 1);
 
     // Основной цикл производства сообщений
-    while (runProducer) {
+    while (runProducer)
+    {
         sem_wait(emptySpaceCount); // Ожидание свободного места в очереди
         sem_wait(mutex); // Захват мьютекса
 

@@ -14,20 +14,26 @@ volatile sig_atomic_t runConsumer = 1;
  * Дочерний процесс занимается обработкой сообщений из общей очереди.
  */
 void createConsumer(void) {
-    if (consumersCount == MAX_COUNT_OF_CONSUMERS) {
+    if (consumersCount == MAX_COUNT_OF_CONSUMERS)
+    {
         printf("Max count of consumers is reached\n");
         return;
     }
 
     pid_t pid = fork(); // Создание нового процесса
 
-    if (pid == -1) {
+    if (pid == -1)
+    {
         perror("consumer fork");
         exit(EXIT_FAILURE);
-    } else if (pid == 0) {
+    }
+    else if (pid == 0)
+    {
         // Код, выполняемый дочерним процессом
         srand(getpid()); // Инициализация генератора случайных чисел для потребителя
-    } else {
+    }
+    else
+    {
         // Код, выполняемый родительским процессом
         consumersPids[consumersCount++] = pid; // Сохранение PID нового потребителя
         return;
@@ -46,7 +52,8 @@ void createConsumer(void) {
     openSemaphore(MUTEX, &mutex, 1); // По сути одноместный семафор - мьютекс
 
     // Основной цикл обработки сообщений потребителя
-    while (runConsumer) {
+    while (runConsumer)
+    {
         sem_wait(filledSpaceSemaphore); // Ожидание наличия сообщения для обработки
         sem_wait(mutex); // Захват мьютекса
 

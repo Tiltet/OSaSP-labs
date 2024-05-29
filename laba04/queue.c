@@ -4,9 +4,11 @@
 #include "functions.h"
 
 
-void initializeQueue(Queue *queue) {
+void initializeQueue(Queue *queue)
+{
     int sharedMemoryID = shm_open(SHARED_MEMORY_NAME, O_CREAT | O_RDWR, 0666);
-    if (sharedMemoryID == -1) {
+    if (sharedMemoryID == -1)
+    {
         perror("shm_open");
         exit(EXIT_FAILURE);
     }
@@ -15,7 +17,8 @@ void initializeQueue(Queue *queue) {
                                       PROT_READ | PROT_WRITE,MAP_SHARED,
                                       sharedMemoryID, 0);
 
-    if (queue == MAP_FAILED) {
+    if (queue == MAP_FAILED)
+    {
         perror("mmap");
         exit(EXIT_FAILURE);
     }
@@ -27,9 +30,10 @@ void initializeQueue(Queue *queue) {
     queue->removedMessages = 0;
 }
 
-void addMessageToQueue(Queue* queue, Message *message) {
-
-    if (queue->currentSize == queue->maxCapacity) {
+void addMessageToQueue(Queue* queue, Message *message)
+{
+    if (queue->currentSize == queue->maxCapacity)
+    {
         printf("Queue is full\n");
         return;
     }
@@ -37,20 +41,24 @@ void addMessageToQueue(Queue* queue, Message *message) {
     queue->currentSize++;
     queue->messages[queue->tail] = *message;
     queue->tail++;
-    if(queue->tail == queue->maxCapacity) {
+    if(queue->tail == queue->maxCapacity)
+    {
         queue->tail = 0;
     }
 }
 
-Message removeMessageFromQueue(Queue* queue) {
+Message removeMessageFromQueue(Queue* queue)
+{
     Message msg;
     msg.hash = 0;
     msg.size = 0;
     msg.type = 0;
-    for (int i = 0; i < 256; i++){
+    for (int i = 0; i < 256; i++)
+    {
         msg.data[i] = 0;
     }
-    if (queue->currentSize == 0) {
+    if (queue->currentSize == 0)
+    {
         printf("Queue is empty\n");
         return msg;
     }
@@ -60,7 +68,8 @@ Message removeMessageFromQueue(Queue* queue) {
     queue->removedMessages++;
     queue->currentSize--;
     queue->head++;
-    if(queue->head == queue->maxCapacity) {
+    if(queue->head == queue->maxCapacity)
+    {
         queue->head = 0;
     }
     return  recievedMessage;

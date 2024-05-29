@@ -5,7 +5,8 @@
  *
  * @param queue Очередь для вывода информации.
  */
-void printQueueInfo(Queue* queue) {
+void printQueueInfo(Queue* queue)
+{
     printf(YELLOW);
     printf("Queue status:\n");
     printf("Queue current size: %d\n", queue->currentSize);
@@ -21,7 +22,8 @@ void printQueueInfo(Queue* queue) {
  * @param sharedMemoryID Идентификатор разделяемой памяти.
  * @param queue Указатель на структуру очереди в разделяемой памяти.
  */
-void menu(int sharedMemoryID, Queue* queue) {
+void menu(int sharedMemoryID, Queue* queue)
+{
     int symbol;
     printf("Choose option:\n"
            "1 - create producer\n"
@@ -30,10 +32,12 @@ void menu(int sharedMemoryID, Queue* queue) {
            "4 - delete consumer\n"
            "5 - display queue info\n"
            "q - quit\n");
-    while (1) {
+    while (1)
+    {
         symbol = getchar();
         getchar();
-        switch (symbol) {
+        switch (symbol)
+        {
             case '1':
                 createProducer();
                 break;
@@ -69,7 +73,8 @@ void menu(int sharedMemoryID, Queue* queue) {
  * @param info Информация о сигнале.
  * @param ptr Дополнительные данные.
  */
-void handleSIGUSR2(int signal, siginfo_t *info, void *ptr) {
+void handleSIGUSR2(int signal, siginfo_t *info, void *ptr)
+{
     runProducer = 0; // Установка флага завершения процесса производителя
 }
 
@@ -80,7 +85,8 @@ void handleSIGUSR2(int signal, siginfo_t *info, void *ptr) {
  * @param info Информация о сигнале.
  * @param ptr Дополнительные данные.
  */
-void handleSIGUSR1(int signal, siginfo_t *info, void *ptr) {
+void handleSIGUSR1(int signal, siginfo_t *info, void *ptr)
+{
     runConsumer = 0; // Установка флага завершения процесса потребителя
 }
 
@@ -138,21 +144,24 @@ void initializeAllSemaphores(sem_t **freeSpaceSemaphore,
     // Инициализация семафора свободного места
     *freeSpaceSemaphore =
             sem_open(SEM_FREE_SPACE, O_CREAT | O_EXCL, 0666, QUEUE_CAPACITY);
-    if (*freeSpaceSemaphore == SEM_FAILED) {
+    if (*freeSpaceSemaphore == SEM_FAILED)
+    {
         perror("sem_open_init_free");
         exit(EXIT_FAILURE);
     }
 
     // Инициализация семафора заполненного места
     *filledSpaceSemaphore = sem_open(SEM_FILLED_SPACE, O_CREAT | O_EXCL, 0666, 0);
-    if (*filledSpaceSemaphore == SEM_FAILED) {
+    if (*filledSpaceSemaphore == SEM_FAILED)
+    {
         perror("sem_open_init_filled");
         exit(EXIT_FAILURE);
     }
 
     // Инициализация семафора мьютекса
     *mutex = sem_open(MUTEX, O_CREAT | O_EXCL, 0666, 1);
-    if (*mutex == SEM_FAILED) {
+    if (*mutex == SEM_FAILED)
+    {
         perror("sem_open_init_mutex");
         exit(EXIT_FAILURE);
     }
@@ -168,20 +177,23 @@ void initializeAllSemaphores(sem_t **freeSpaceSemaphore,
 void initializeSharedMemory(int *sharedMemoryId, Queue **queue, char setSizeFlag) {
     // Создание или открытие разделяемой памяти
     *sharedMemoryId = shm_open(SHARED_MEMORY_NAME, O_CREAT | O_RDWR, 0666);
-    if (*sharedMemoryId == -1) {
+    if (*sharedMemoryId == -1)
+    {
         perror("shm_open");
         exit(EXIT_FAILURE);
     }
 
     // Установка размера разделяемой памяти, если задан флаг
-    if (setSizeFlag) {
+    if (setSizeFlag)
+    {
         ftruncate(*sharedMemoryId, SHM_SIZE);
     }
 
     // Отображение разделяемой памяти в адресное пространство процесса
     *queue = mmap(NULL, SHM_SIZE, PROT_READ | PROT_WRITE,
                   MAP_SHARED, *sharedMemoryId, 0);
-    if (*queue == MAP_FAILED) {
+    if (*queue == MAP_FAILED)
+    {
         perror("mmap");
         exit(EXIT_FAILURE);
     }
@@ -197,7 +209,8 @@ void initializeSharedMemory(int *sharedMemoryId, Queue **queue, char setSizeFlag
 void openSemaphore(const char name[], sem_t** semaphore, int value) {
     // Открытие семафора с указанным именем и начальным значением
     *semaphore = sem_open(name, value);
-    if (*semaphore == SEM_FAILED) {
+    if (*semaphore == SEM_FAILED)
+    {
         perror("sem_open");
         exit(EXIT_FAILURE);
     }
