@@ -70,59 +70,76 @@ void *consumer(void *arg) {
 }
 
 void create_producer() {
-    if (num_producers < MAX_PRODUCERS) {
+    if (num_producers < MAX_PRODUCERS)
+    {
         pthread_create(&producer_threads[num_producers], NULL, producer, NULL);
         num_producers++;
-    } else {
+    }
+    else
+    {
         printf("Cannot create more producers. Maximum limit reached.\n");
     }
 }
 
 void create_consumer() {
-    if (num_consumers < MAX_CONSUMERS) {
+    if (num_consumers < MAX_CONSUMERS)
+    {
         pthread_create(&consumer_threads[num_consumers], NULL, consumer, NULL);
         num_consumers++;
-    } else {
+    }
+    else
+    {
         printf("Cannot create more consumers. Maximum limit reached.\n");
     }
 }
 
-void delete_producer() {
-    if (num_producers > 0) {
+void delete_producer()
+{
+    if (num_producers > 0)
+    {
         pthread_cancel(producer_threads[num_producers - 1]);
         pthread_join(producer_threads[num_producers - 1], NULL);
         printf(RED);
         printf("\nProducer thread with ID %lu was deleted\n", producer_threads[num_producers - 1]);
         printf(WHITE);
         num_producers--;
-    } else {
+    }
+    else
+    {
         printf(YELLOW);
         printf("No producers to delete.\n");
         printf(WHITE);
     }
 }
 
-void delete_consumer() {
-    if (num_consumers > 0) {
+void delete_consumer()
+{
+    if (num_consumers > 0)
+    {
         pthread_cancel(consumer_threads[num_consumers - 1]);
         pthread_join(consumer_threads[num_consumers - 1], NULL);
         printf(RED);
         printf("\nConsumer thread with ID %lu was deleted\n", consumer_threads[num_consumers - 1]);
         printf(WHITE);
         num_consumers--;
-    } else {
+    }
+    else
+    {
         printf(YELLOW);
         printf("There is no consumers to delete.\n");
         printf(WHITE);
     }
 }
 
-void end_program() {
-    for (int i = num_producers - 1; i >= 0; i--) {
+void end_program()
+{
+    for (int i = num_producers - 1; i >= 0; i--)
+    {
         pthread_cancel(producer_threads[i]);
         pthread_join(producer_threads[i], NULL);
     }
-    for (int i = num_consumers - 1; i >= 0; i--) {
+    for (int i = num_consumers - 1; i >= 0; i--)
+    {
         pthread_cancel(consumer_threads[i]);
         pthread_join(consumer_threads[i], NULL);
     }
@@ -132,12 +149,14 @@ void end_program() {
     exit(0);
 }
 
-int main() {
+int main()
+{
     queue = (Queue*)malloc(sizeof(Queue));
     initializeQueue(&queue);
     int choice;
 
-    while (1) {
+    while (1)
+    {
         printf("\nMenu:\n");
         printf("1. Create producer\n");
         printf("2. Create consumer\n");
@@ -149,42 +168,53 @@ int main() {
         choice = getchar();
         getchar();
 
-        switch(choice) {
-            case '1': {
+        switch(choice)
+        {
+            case '1':
+            {
                 create_producer();
                 break;
             }
-            case '2': {
+            case '2':
+            {
                 create_consumer();
                 break;
             }
-            case '3': {
+            case '3':
+            {
                 delete_producer();
                 break;
             }
-            case '4': {
+            case '4':
+            {
                 delete_consumer();
                 break;
             }
-            case '5': {
+            case '5':
+            {
                 printQueueInfo(queue);
                 break;
             }
-            case 'q': {
+            case 'q':
+            {
                 end_program();
                 return 0;
             }
-            case '+': {
+            case '+':
+            {
                 pthread_mutex_lock(&mutex);
-                if(increaseQueueSize(queue)) {
+                if (increaseQueueSize(queue))
+                {
                     pthread_cond_signal(&empty);
                 }
                 pthread_mutex_unlock(&mutex);
                 break;
             }
-            case '-': {
+            case '-':
+            {
                 pthread_mutex_lock(&mutex);
-                if(decreaseQueueSize(queue)) {
+                if (decreaseQueueSize(queue))
+                {
                     pthread_cond_signal(&full);
                 }
                 pthread_mutex_unlock(&mutex);
