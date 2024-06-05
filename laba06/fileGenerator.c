@@ -10,31 +10,6 @@ struct index_s {
     uint64_t recno; // номер записи
 };
 
-void printRecordsFromFile(const char* fileName) {
-    FILE* file = fopen(fileName, "rb"); // открытие файла для чтения в двоичном режиме
-    uint64_t count;
-
-    fseek(file, 0, SEEK_END); // перемещение указателя файла в конец
-    unsigned long amountOfRecords = ftell(file) / sizeof(struct index_s); // определение количества записей в файле
-    fseek(file, 0, SEEK_SET); // перемещение указателя файла в начало
-
-    double temp_1;
-    uint64_t temp_2;
-
-    for (int i = 0; i < (int)amountOfRecords; i++) {
-        fread(&temp_1, sizeof(double), 1, file); // чтение временной метки из файла
-        fread(&temp_2, sizeof(uint64_t), 1, file); // чтение номера записи из файла
-        printf("%.2ld\t%lf;\t", temp_2, temp_1); // вывод номера записи и временной метки
-        if (!((i + 1) % 256)) {
-            puts(""); // вывод пустой строки каждые 256 записей
-        }
-        if (!((i + 1) % 256)) {
-            puts(""); // вывод пустой строки каждые 256 записей
-        }
-    }
-    puts(""); // вывод пустой строки
-}
-
 // Функция для генерации случайного числа в заданном диапазоне
 double random_double(double min, double max) {
     return min + ((double)rand() / RAND_MAX) * (max - min); // генерация случайного числа с плавающей точкой

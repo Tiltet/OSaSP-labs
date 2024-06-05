@@ -37,27 +37,6 @@ void print() // функция print без аргументов и возвра
     puts("\n"); // вывод пустой строки
 }
 
-void printRecordsFromFile(const char* fileName) { // функция printRecordsFromFile с аргументом fileName типа const char*
-    FILE* file = fopen(fileName, "rb"); // открытие файла в режиме чтения
-    fseek(file, 0, SEEK_END); // перемещение указателя файла в конец
-    unsigned long amountOfRecords = ftell(file) / sizeof(Record); // вычисление количества записей в файле
-    fseek(file, 0, SEEK_SET); // перемещение указателя файла в начало
-
-    Record temp_record; // временная переменная типа Record
-
-    for (int i = 0; i < (int)amountOfRecords; i++) { // цикл от 0 до amountOfRecords
-        fread(&temp_record, sizeof(Record), 1, file); // чтение записи из файла
-        printf("%lu\t%lf;\n", temp_record.recno, temp_record.time_mark); // вывод значений recno и time_mark
-        if (!((i + 1) % 8)) { // если (i + 1) делится на 8 без остатка
-            puts(""); // вывод пустой строки
-        }
-        if (!((i + 1) % 256)) { // если (i + 1) делится на 256 без остатка
-            puts(""); // вывод пустой строки
-        }
-    }
-    puts(""); // вывод пустой строки
-}
-
 int isSubOfTwo(int n) { // функция isSubOfTwo с аргументом n типа int
     return (n > 0) && ((n & (n - 1)) == 0); // возвращает 1, если n больше 0 и является степенью двойки, иначе 0
 }
